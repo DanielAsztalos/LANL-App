@@ -1,0 +1,105 @@
+[
+    {
+        "model_type": "RandomForestRegressor",
+        "params": [
+            {
+                "name": "bootstrap",
+                "type": 0,
+                "vals": [0, 1]
+            },
+
+            {
+                "name": "max_depth",
+                "type": 1,
+                "vals": [4, 9, 1]
+            },
+
+            {
+                "name": "max_features",
+                "type": 0,
+                "vals": ["auto", "sqrt"]
+            },
+
+            {
+                "name": "min_samples_leaf",
+                "type": 1,
+                "vals": [1, 4, 1]
+            },
+
+            {
+                "name": "min_samples_split",
+                "type":1,
+                "vals":[2, 10, 2]
+            },
+
+            {
+                "name": "n_estimators",
+                "type": 1,
+                "vals":[200, 2000, 200]
+            }
+
+        ]
+    },
+
+    {
+        "model_type": "XGBRegressor",
+        "params":[
+            {
+                "name": "max_depth",
+                "type":1,
+                "vals":[3, 9, 1]
+            },
+            {
+                "name": "min_child_weight",
+                "type": 1,
+                "vals": [1, 5, 2]
+            },
+            {
+                "name": "gamma",
+                "type": 1,
+                "vals": [0, 0.4, 0.1]
+            },
+            {
+                "name": "subsample",
+                "type": 1,
+                "vals": [0.7, 0.9, 0.1]
+            },
+            {
+                "name": "colsample_bytree",
+                "type": 1,
+                "vals": [0.7, 0.9, 0.1]
+            },
+            {
+                "name": "reg_alpha",
+                "type":1,
+                "vals":[1, 100, 10]
+            },
+            {
+                "name": "eta",
+                "type": 1,
+                "vals": [0.001, 0.1, 0.01]
+            },
+            {
+                "name": "n_estimators",
+                "type": 1,
+                "vals": [300, 1000, 100]
+            }
+        ]
+    },
+
+    {
+        "model_type": "SymbolicRegressor",
+        "params":[
+            {
+                "name": "p_crossover",
+                "type": 2,
+                "vals": [0.5, 1.0, 0.1]
+            },
+            {
+                "name": "p_point_mutation",
+                "type":2,
+                "vals": [0.0, 0.5, 0.1]
+            }
+        ]
+    }
+]
