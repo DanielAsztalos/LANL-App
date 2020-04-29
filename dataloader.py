@@ -9,7 +9,7 @@ from errors import FileNotCSVError, FileNotFoundError
 """
 
 class DataLoader:
-    def __init__(self, data_file="data/train_data.csv"):
+    def __init__(self, data_file="data/prepared_train_data.csv"):
         if not os.path.exists(data_file):
             raise FileNotFoundError
         if data_file[-4:] != ".csv":
@@ -18,7 +18,7 @@ class DataLoader:
         # read data from csv file
         self.data = pd.read_csv(data_file, index_col=0)
 
-        self.data = Data(self.data.drop(columns=['target', 'start']), self.data['target'])
+        self.data = Data(self.data.drop(columns=['target']), self.data['target'])
 
         self.scaler = StandardScaler()
         self.scaler.fit(self.data.X)

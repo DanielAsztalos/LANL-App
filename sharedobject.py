@@ -11,6 +11,8 @@ class SharedObject:
         self.root = root
         self.selected_model_lock = Lock()
         self.selected_model = selected_model
+        self.model_lock = Lock()
+        self.model = None
         self.param_grid_lock = Lock()
         self.param_grid = param_grid
 

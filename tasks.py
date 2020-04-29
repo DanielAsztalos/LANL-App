@@ -128,6 +128,10 @@ class TrainAndTest:
             train_scores.append(mean_absolute_error(y_te, model.predict(x_te)))
             test_scores.append(mean_absolute_error(y_test, model.predict(X_test)))
 
+        self.shared.model_lock.acquire()
+        self.shared.model = model
+        self.shared.model_lock.release()
+
         # put train and test results into a dictionary
         results = dict()
         results['train_scores'] = train_scores

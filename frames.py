@@ -58,6 +58,10 @@ class ParamSelectionFrame(tk.Frame):
         self.shared.selected_model_lock.release()
 
     def search_task(self):
+        self.shared.state_lock.acquire()
+        self.shared.state.set("Searching for the optimal parameters")
+        self.shared.state_lock.release()
+
         queue = Queue()
         grid, _ = self.paramloader.get_param_grid(self.shared.selected_model)
         search_task = SearchParams(get_model(self.shared.selected_model), grid, queue, self.shared.selected_model)
@@ -118,10 +122,6 @@ class ModelTrainingFrame(tk.Frame):
         train_task = TrainAndTest(self.shared, queue, int(self.widgets[1].get()), float(self.widgets[0].get()))
         p1 = threading.Thread(target=(lambda : train_task.execute()))
         p1.start()
-
-        self.shared.state_lock.acquire()
-        self.shared.state.set("Searching for the optimal parameters")
-        self.shared.state_lock.release()
 
         check_task = CheckSearch(p1, queue, self.shared, self.after_train)
         p2 = threading.Thread(target=(lambda : check_task.execute()))
