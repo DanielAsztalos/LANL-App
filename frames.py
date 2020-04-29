@@ -107,12 +107,21 @@ class ModelTrainingFrame(tk.Frame):
             spinner.pack(in_=container, anchor=tk.NW)
             self.widgets.append(spinner)
 
+        button_container = tk.Frame(self)
+        button_container.pack(side=tk.TOP, anchor=tk.NW, padx=10, pady=10)
+
         start_train = tk.Button(self, text="Start training", command=self.train_task)
-        start_train.pack(side=tk.TOP, anchor=tk.NW, padx=10, pady=10)
+        start_train.pack(in_=button_container, side=tk.LEFT, anchor=tk.NW, padx=0, pady=0)
+
+        benchmark = tk.Button(self, text="Benchmark all models")
+        benchmark.pack(in_=button_container, side=tk.LEFT, anchor=tk.NW)
+
+        label = tk.Label(self, text="Results")
+        label.pack(side=tk.TOP, anchor=tk.NW, padx=10, pady=20)
 
         self.table = ttk.Treeview(self, columns=('mean_abs_error'))
         self.table.heading('mean_abs_error', text="Mean abs error")
-        self.table.pack(side=tk.TOP, anchor=tk.NW, padx=10, pady=30)
+        self.table.pack(side=tk.TOP, anchor=tk.NW, padx=10, pady=0)
 
     def get_name(self):
         return self.name
