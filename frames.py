@@ -8,16 +8,16 @@ from models import get_model
 import threading
 import numpy as np
 
-class ParamSelectionFrame(tk.Frame):
+class ParamSelectionFrame(ttk.Frame):
     def __init__(self, parent, shared):
-        tk.Frame.__init__(self, parent)
+        ttk.Frame.__init__(self, parent)
         self.name = "Model selection"
         self.shared = shared
 
-        self.top_bar = tk.Frame(self)
+        self.top_bar = ttk.Frame(self)
         self.top_bar.pack(anchor=tk.NW, padx=10, pady=10)
 
-        self.label = tk.Label(self, text="Choose a model")
+        self.label = ttk.Label(self, text="Choose a model")
         self.label.pack(in_=self.top_bar, side=tk.LEFT, padx=10, pady=5, anchor=tk.NW)
 
         self.paramloader = ParamLoader()
@@ -30,10 +30,10 @@ class ParamSelectionFrame(tk.Frame):
         self.shared.selected_model = model_names[0]
         self.shared.selected_model_lock.release()
 
-        self.dropdown = tk.OptionMenu(self, self.tkvar, *model_names, command=partial(self.model_selection_change))
+        self.dropdown = ttk.OptionMenu(self, self.tkvar, model_names[0], *model_names, command=partial(self.model_selection_change))
         self.dropdown.pack(in_=self.top_bar, side=tk.TOP, padx=10, pady=5, anchor=tk.NW)
 
-        self.search_button = tk.Button(self, text="Search for the best parameters", command=self.search_task)
+        self.search_button = ttk.Button(self, text="Search for the best parameters", command=self.search_task)
         self.search_button.pack(in_=self.top_bar, side=tk.TOP, padx=10, pady=5)
 
         grid, types = self.paramloader.get_param_grid(model_names[0])
@@ -80,14 +80,14 @@ class ParamSelectionFrame(tk.Frame):
         self.model_selection_change((list(grid.keys())[0]))
     
 
-class ModelTrainingFrame(tk.Frame):
+class ModelTrainingFrame(ttk.Frame):
     def __init__(self, parent, shared):
-        tk.Frame.__init__(self, parent)
+        ttk.Frame.__init__(self, parent)
         
         self.name = "Training model"
         self.shared = shared
 
-        label1 = tk.Label(self, text="Train and test parameters")
+        label1 = ttk.Label(self, text="Train and test parameters")
         label1.pack(side=tk.TOP, anchor=tk.NW, padx=10, pady=10)
 
         test_size = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
@@ -97,26 +97,30 @@ class ModelTrainingFrame(tk.Frame):
         self.widgets = []
 
         for val, label in zip(values, labels):
-            container = tk.Frame(self)
+            container = ttk.Frame(self)
             container.pack(anchor=tk.NW, padx=10, pady=10)
 
-            label = tk.Label(self, text=label)
+            label = ttk.Label(self, text=label)
             label.pack(in_=container, anchor=tk.NW)
 
             spinner = tk.Spinbox(self, values=val)
             spinner.pack(in_=container, anchor=tk.NW)
             self.widgets.append(spinner)
 
-        button_container = tk.Frame(self)
+        self.upload_selected = tk.IntVar()
+        check_box = ttk.Checkbutton(self, text="Upload to kaggle", variable=self.upload_selected)
+        check_box.pack(side=tk.TOP, anchor=tk.NW, padx=10)
+
+        button_container = ttk.Frame(self)
         button_container.pack(side=tk.TOP, anchor=tk.NW, padx=10, pady=10)
 
-        start_train = tk.Button(self, text="Start training", command=self.train_task)
+        start_train = ttk.Button(self, text="Start training", command=self.train_task)
         start_train.pack(in_=button_container, side=tk.LEFT, anchor=tk.NW, padx=0, pady=0)
 
-        benchmark = tk.Button(self, text="Benchmark all models")
+        benchmark = ttk.Button(self, text="Benchmark all models")
         benchmark.pack(in_=button_container, side=tk.LEFT, anchor=tk.NW)
 
-        label = tk.Label(self, text="Results")
+        label = ttk.Label(self, text="Results")
         label.pack(side=tk.TOP, anchor=tk.NW, padx=10, pady=20)
 
         self.table = ttk.Treeview(self, columns=('mean_abs_error'))
@@ -128,7 +132,7 @@ class ModelTrainingFrame(tk.Frame):
 
     def train_task(self):
         queue = Queue()
-        train_task = TrainAndTest(self.shared, queue, int(self.widgets[1].get()), float(self.widgets[0].get()))
+        train_task = TrainAndTest(self.shared, queue, int(self.widgets[1].get()), float(self.widgets[0].get()), self.upload_selected.get())
         p1 = threading.Thread(target=(lambda : train_task.execute()))
         p1.start()
 
@@ -157,15 +161,15 @@ class ModelTrainingFrame(tk.Frame):
         for i, score in enumerate(results["test_scores"]):
             self.table.insert('test', 'end', text="Fold {}".format(i), values=(score))
 
-class ParameterTemplateFrame(tk.Frame):
+class ParameterTemplateFrame(ttk.Frame):
     def __init__(self, parent, grid, types, shared):
-        tk.Frame.__init__(self, parent)
+        ttk.Frame.__init__(self, parent)
         self.parent = parent
         self.shared = shared
 
         canvas = tk.Canvas(self)
 
-        scrollbar = tk.Scrollbar(self, orient='vertical', command=canvas.yview)
+        scrollbar = ttk.Scrollbar(self, orient='vertical', command=canvas.yview)
 
         self.scrollable_frame = ttk.Frame(canvas)
 
@@ -196,16 +200,16 @@ class ParameterTemplateFrame(tk.Frame):
         for i, param in enumerate(grid.keys()):
             self.labels.append(param)
 
-            container = tk.Frame(self.scrollable_frame)
+            container = ttk.Frame(self.scrollable_frame)
             container.pack(anchor=tk.NW, padx=10, pady=10)
 
-            label = tk.Label(self.scrollable_frame, text=param)
+            label = ttk.Label(self.scrollable_frame, text=param)
             label.pack(in_=container, anchor=tk.NW)
 
             if types[i] == 0:
                 tkVar = tk.StringVar()
                 tkVar.set(defaults[param])
-                widget = tk.OptionMenu(self.scrollable_frame, tkVar, *grid[param])
+                widget = ttk.OptionMenu(self.scrollable_frame, tkVar, grid[param][0], *grid[param])
                 widget.pack(in_=container, anchor=tk.NW)
                 self.widgets.append(tkVar)
 
@@ -234,7 +238,7 @@ class ParameterTemplateFrame(tk.Frame):
                 l +=1
                 self.specials.append(self.widgets.index(widget))
 
-        save_settings = tk.Button(self.scrollable_frame, text="Save settings as default", command=self.save_params)
+        save_settings = ttk.Button(self.scrollable_frame, text="Save settings as default", command=self.save_params)
         save_settings.pack(anchor=tk.NW, padx=10, pady=10)
 
             

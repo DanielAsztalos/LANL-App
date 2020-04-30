@@ -1,0 +1,23 @@
+fileName                  date                 description                       status    publicScore  privateScore  
+------------------------  -------------------  --------------------------------  --------  -----------  ------------  
+submission.csv            2020-04-30 17:06:29  XGBRegressor 2020/04/30 20:06:28  pending   None         None          
+submission.csv            2020-04-30 16:57:14  RandomForestRegressor_test        complete  1.88845      2.30272       
+submission.csv            2020-04-30 16:50:58  XGBRegressor_test                 complete  1.92217      2.31418       
+nn.csv                    2020-03-16 12:58:54  nn                                complete  1.86089      2.38410       
+xg_n_f.csv                2020-03-16 10:48:48  xgboost                           complete  1.87963      2.30062       
+rf.csv                    2020-03-16 09:57:43  Random Forest                     complete  1.81164      2.32417       
+genetic_n_f_denoised.csv  2020-03-15 21:53:40  denoised                          complete  1.78416      2.32979       
+genetic_n_f.csv           2020-03-11 09:53:45  genetic new features              complete  1.79945      2.35427       
+genetic_10feats.csv       2020-03-07 11:04:50  g 10 features                     complete  1.80435      2.36645       
+genetic.csv               2020-03-07 10:11:00  genetic                           complete  1.72513      2.33383       
+factory.csv               2020-03-03 12:37:57  example                           complete  1.54699      2.52981       
+gp_cleaned.csv            2020-03-02 13:39:51  gp 10                             complete  3.01223      5.49000       
+xgb_denoised.csv          2020-02-26 18:06:40  xgb 3                             complete  2.15378      3.54131       
+xgboost.csv               2020-02-23 21:50:25  xgb2                              complete  3.13640      5.74268       
+xgboost.csv               2020-02-22 14:49:12  xgboost
+                          complete  2.24118      4.12711       
+SVR.csv                   2020-02-20 20:43:03  svr true                          complete  1.69997      2.98257       
+SVR.csv                   2020-02-20 20:41:43  svr                               complete  1.66565      2.75252       
+random_forest.csv         2020-02-20 20:25:25  random forest                     complete  1.66565      2.75252       
+gplearn.csv               2020-02-20 19:11:19  lol                               complete  1.62892      2.61494       
+combined2.csv             2019-05-17 12:04:24  combined2                         error     None         None          

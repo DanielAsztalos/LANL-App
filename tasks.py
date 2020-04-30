@@ -8,6 +8,8 @@ from sklearn.metrics import mean_absolute_error
 import threading
 import time
 import numpy as np
+from datetime import datetime
+import os
 
 
 # This class handles the Random Parameter Search functionality
@@ -84,16 +86,17 @@ class CheckSearch:
 
 # this class realises the training and testing of a given model
 class TrainAndTest:
-    def __init__(self, shared, queue, n_folds, test_size):
+    def __init__(self, shared, queue, n_folds, test_size, upload_to_kaggle):
         self.shared = shared
         self.queue = queue
         self.n_folds = n_folds
         self.test_size = test_size
+        self.upload_to_kaggle = upload_to_kaggle
 
     def execute(self):
         # load data
         data_loader = DataLoader()
-        data = data_loader.data
+        data = data_loader.get_data()
 
         # split data into train and test sets
         X_train, X_test, y_train, y_test = train_test_split(data.X, data.y, test_size=self.test_size)
@@ -107,6 +110,7 @@ class TrainAndTest:
 
         train_scores = []
         test_scores = []
+        kaggle_pred = np.zeros((data_loader.get_test_data().shape[0],))
 
         # reset indexes in the train data
         X_train = X_train.reset_index()
@@ -128,9 +132,30 @@ class TrainAndTest:
             train_scores.append(mean_absolute_error(y_te, model.predict(x_te)))
             test_scores.append(mean_absolute_error(y_test, model.predict(X_test)))
 
+            if self.upload_to_kaggle:
+                kaggle_pred += model.predict(data_loader.get_test_data())
+
         self.shared.model_lock.acquire()
         self.shared.model = model
         self.shared.model_lock.release()
+
+        if self.upload_to_kaggle:
+            self.shared.state_lock.acquire()
+            self.shared.state.set("Submiting to kaggle...")
+            self.shared.state_lock.release()
+
+            sample = data_loader.get_sample_file()
+            sample["time_to_failure"] = kaggle_pred / self.n_folds
+            sample.to_csv("data/submission.csv")
+
+            os.system("kaggle competitions submit -c LANL-Earthquake-Prediction -f data/submission.csv -m \"{}\""\
+                .format(self.shared.selected_model + " " + datetime.now().strftime("%Y/%m/%d %H:%M:%S")))
+
+            os.system("kaggle competitions submissions -c LANL-Earthquake-Prediction > data/kaggle_results.txt")
+            
+            self.shared.state_lock.acquire()
+            self.shared.state.set("Submited to kaggle")
+            self.shared.state_lock.release()
 
         # put train and test results into a dictionary
         results = dict()
