@@ -2,9 +2,10 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from paramloader import ParamLoader
 from functools import partial
-from tasks import SearchParams, CheckSearch, TrainAndTest
+from tasks import SearchParams, CheckSearch, TrainAndTest, BenchmarkModels
 from multiprocessing import Queue
 from models import get_model
+from mainwindow import BenchmarkWindow
 import threading
 import numpy as np
 
@@ -117,7 +118,7 @@ class ModelTrainingFrame(ttk.Frame):
         start_train = ttk.Button(self, text="Start training", command=self.train_task)
         start_train.pack(in_=button_container, side=tk.LEFT, anchor=tk.NW, padx=0, pady=0)
 
-        benchmark = ttk.Button(self, text="Benchmark all models")
+        benchmark = ttk.Button(self, text="Benchmark all models", command=self.benchmark_task)
         benchmark.pack(in_=button_container, side=tk.LEFT, anchor=tk.NW)
 
         label = ttk.Label(self, text="Results")
@@ -138,6 +139,16 @@ class ModelTrainingFrame(ttk.Frame):
 
         check_task = CheckSearch(p1, queue, self.shared, self.after_train)
         p2 = threading.Thread(target=(lambda : check_task.execute()))
+        p2.start()
+
+    def benchmark_task(self):
+        queue = Queue()
+        task = BenchmarkModels(self.shared, queue, int(self.widgets[1].get()), float(self.widgets[0].get()))
+        p1 = threading.Thread(target=lambda: task.execute())
+        p1.start()
+
+        check_task = CheckSearch(p1, queue, self.shared, self.after_benchmark)
+        p2 = threading.Thread(target=lambda: check_task.execute())
         p2.start()
 
     def after_train(self, queue):
@@ -161,13 +172,21 @@ class ModelTrainingFrame(ttk.Frame):
         for i, score in enumerate(results["test_scores"]):
             self.table.insert('test', 'end', text="Fold {}".format(i), values=(score))
 
+    def after_benchmark(self, queue):
+        scores = queue.get()
+
+        print(scores)
+
+        self.new = tk.Toplevel(self.shared.root)
+        BenchmarkWindow(self.new)
+
 class ParameterTemplateFrame(ttk.Frame):
     def __init__(self, parent, grid, types, shared):
         ttk.Frame.__init__(self, parent)
         self.parent = parent
         self.shared = shared
 
-        canvas = tk.Canvas(self)
+        canvas = tk.Canvas(self, bg="#F5F6F7")
 
         scrollbar = ttk.Scrollbar(self, orient='vertical', command=canvas.yview)
 

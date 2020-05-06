@@ -44,3 +44,11 @@ class MainWindow:
     # show window
     def show(self):
         self.window.mainloop()
+
+class BenchmarkWindow:
+    def __init__(self, root):
+        self.root = root
+        self.root.geometry("300x300")
+
+        style = ThemedStyle(self.root)
+        style.set_theme('arc')

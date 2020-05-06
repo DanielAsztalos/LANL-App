@@ -167,10 +167,58 @@ class TrainAndTest:
         self.queue.put(results)
 
 
+class BenchmarkModels:
+    def __init__(self, shared, queue, n_folds, test_size):
+        self.shared = shared
+        self.queue = queue
+        self.n_folds = n_folds
+        self.test_size = test_size
 
+    def execute(self):
+        param_loader = ParamLoader()
+        data_loader = DataLoader()
 
+        models = []
+        model_names = param_loader.get_model_names()
+        defaults = param_loader.load_defaults()
+        for model_name in param_loader.get_model_names():
+            md = get_model(model_name)
+            md.set_params(**defaults[model_name])
+            models.append(md)
+        data = data_loader.get_data()
 
+        X_train, X_test, y_train, y_test = train_test_split(data.X, data.y, test_size=self.test_size)
 
+        X_train = X_train.reset_index()
+        X_train = X_train.drop('index', axis=1)
+        y_train = y_train.reset_index()
+        y_train = y_train.drop('index', axis=1)
 
+        scores = dict()
+        folds = KFold(n_splits=self.n_folds)
 
-    
+        for i, (train_idx, test_idx) in enumerate(folds.split(X_train)):
+            self.shared.state_lock.acquire()
+            self.shared.state.set("Train fold: {}/{}".format(i+1, self.n_folds))
+            self.shared.state_lock.release()
+            
+            x_tr, x_te = X_train.loc[train_idx], X_train.loc[test_idx]
+            y_tr, y_te = y_train.loc[train_idx], y_train.loc[test_idx]
+
+            for mod_idx, model in enumerate(models):
+                model_name = model_names[mod_idx]
+                print(model_name)
+                model.fit(x_tr, y_tr)
+
+                if model_name not in scores.keys():
+                    scores[model_name] = dict()
+                    scores[model_name]["train"] = []
+                    scores[model_name]["validation"] = []
+
+                print("DoneDunn")
+                scores[model_name]["train"].append(mean_absolute_error(y_te, model.predict(x_te)))
+                print("DoneDuh")
+                scores[model_name]["validation"].append(mean_absolute_error(y_test, model.predict(X_test)))
+
+        self.queue.put("Done")
+        self.queue.put(scores)
