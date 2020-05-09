@@ -24,8 +24,7 @@ class SearchParams:
 
     def execute(self):
         # instantiate random search with the given parameters and fit
-        src = GridSearchCV(self.model, self.grid, scoring='neg_mean_absolute_error', cv=3)
-        # src = RandomizedSearchCV(self.model, self.grid, n_iter=50, cv=3, scoring='neg_mean_absolute_error')
+        src = RandomizedSearchCV(self.model, self.grid, n_iter=75, cv=3, scoring='neg_mean_absolute_error')
         src.fit(self.data.X, self.data.y)
 
         # when done send a signal to the checker process

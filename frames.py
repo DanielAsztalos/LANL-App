@@ -9,6 +9,7 @@ from mainwindow import BenchmarkWindow
 import threading
 import numpy as np
 
+# displayed on the left side of the main window
 class ParamSelectionFrame(ttk.Frame):
     def __init__(self, parent, shared):
         ttk.Frame.__init__(self, parent)
@@ -80,7 +81,7 @@ class ParamSelectionFrame(ttk.Frame):
 
         self.model_selection_change((list(grid.keys())[0]))
     
-
+# displayed on the right side of the window
 class ModelTrainingFrame(ttk.Frame):
     def __init__(self, parent, shared):
         ttk.Frame.__init__(self, parent)
@@ -176,8 +177,10 @@ class ModelTrainingFrame(ttk.Frame):
         scores = queue.get()
 
         self.new = tk.Toplevel(self.shared.root, bg="#F5F6F7")
+        self.new.transient(self.shared.root)
         BenchmarkWindow(self.new, scores)
 
+# embedded into the ParamSelection frame
 class ParameterTemplateFrame(ttk.Frame):
     def __init__(self, parent, grid, types, shared):
         ttk.Frame.__init__(self, parent)
@@ -237,24 +240,6 @@ class ParameterTemplateFrame(ttk.Frame):
                 widget.pack(in_=container, anchor=tk.NW)
                 self.widgets.append(widget)
 
-            # else:
-            #     var = tk.StringVar()
-            #     # var.set(str(defaults[param]))
-            #     widget = tk.Spinbox(self.scrollable_frame, textvariable=var, values=grid[param])
-            #     widget.pack(in_=container, anchor=tk.NW)
-
-            #     if x == True:
-            #         x = False
-            #     else:
-            #         for _ in range(5):
-            #             widget.invoke("buttonup")
-            #         x = True
-            #     self.widgets.append(widget)
-            #     widget.config(command=partial(self.special_action, l))
-
-            #     l +=1
-            #     self.specials.append(self.widgets.index(widget))
-
         save_settings = ttk.Button(self.scrollable_frame, text="Save settings as default", command=self.save_params)
         save_settings.pack(anchor=tk.NW, padx=10, pady=10)
 
@@ -268,26 +253,3 @@ class ParameterTemplateFrame(ttk.Frame):
             params[name][self.labels[i]] = self.widgets[i].get()
         
         self.parent.paramloader.modify_defaults(params)
-
-    def special_action(self, idx):
-        val1 = float(self.widgets[self.specials[0]].get())
-        val2 = float(self.widgets[self.specials[1]].get())
-
-        if idx == self.specials[0]:
-            if val1 + val2 < 1.0:
-                self.widgets[self.specials[1]].config(command=lambda: 1)
-                self.widgets[self.specials[1]].invoke("buttonup")
-                self.widgets[self.specials[1]].config(command=partial(self.special_action, 1))
-            elif val1 + val2 > 1.0:
-                self.widgets[self.specials[1]].config(command=lambda: 1)
-                self.widgets[self.specials[1]].invoke("buttondown")
-                self.widgets[self.specials[1]].config(command=partial(self.special_action, 1))
-        else:
-            if val1 + val2 < 1.0:
-                self.widgets[self.specials[0]].config(command=lambda: 1)
-                self.widgets[self.specials[0]].invoke("buttonup")
-                self.widgets[self.specials[0]].config(command=partial(self.special_action, 0))
-            elif val1 + val2 > 1.0:
-                self.widgets[self.specials[0]].config(command=lambda: 1)
-                self.widgets[self.specials[0]].invoke("buttondown")
-                self.widgets[self.specials[0]].config(command=partial(self.special_action, 0))
