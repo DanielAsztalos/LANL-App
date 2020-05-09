@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import StandardScaler
 import os
 from errors import FileNotCSVError, FileNotFoundError
@@ -17,7 +18,7 @@ class DataLoader:
             raise FileNotCSVError
 
         # read data from csv file
-        self.data = pd.read_csv(data_file, index_col=0)
+        self.data = pd.read_csv(data_file, index_col=0, sep=',', dtype=np.float32)
 
         self.data = Data(self.data.drop(columns=['target']), self.data['target'])
 

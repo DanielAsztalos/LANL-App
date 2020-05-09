@@ -11,3 +11,11 @@ def get_model(name):
     elif name == "XGBRegressor":
         from xgboost import XGBRegressor
         return XGBRegressor()
+
+    elif name == "CatBoost":
+        from catboost import CatBoostRegressor
+        return CatBoostRegressor()
+    
+    elif name == "LGBM":
+        from lightgbm import LGBMRegressor
+        return LGBMRegressor(metric="mae", early_stopping_round=2000)

@@ -1,6 +1,8 @@
 fileName                  date                 description                       status    publicScore  privateScore  
 ------------------------  -------------------  --------------------------------  --------  -----------  ------------  
-submission.csv            2020-04-30 17:06:29  XGBRegressor 2020/04/30 20:06:28  pending   None         None          
+submission.csv            2020-05-06 19:43:23  CatBoost 2020/05/06 22:43:18      complete  1.90816      2.31294       
+submission.csv            2020-05-06 17:25:19  LGBM 2020/05/06 20:25:12          complete  1.78274      2.37273       
+submission.csv            2020-04-30 17:06:29  XGBRegressor 2020/04/30 20:06:28  complete  1.83854      2.29829       
 submission.csv            2020-04-30 16:57:14  RandomForestRegressor_test        complete  1.88845      2.30272       
 submission.csv            2020-04-30 16:50:58  XGBRegressor_test                 complete  1.92217      2.31418       
 nn.csv                    2020-03-16 12:58:54  nn                                complete  1.86089      2.38410       
@@ -19,5 +21,3 @@ xgboost.csv               2020-02-22 14:49:12  xgboost
 SVR.csv                   2020-02-20 20:43:03  svr true                          complete  1.69997      2.98257       
 SVR.csv                   2020-02-20 20:41:43  svr                               complete  1.66565      2.75252       
 random_forest.csv         2020-02-20 20:25:25  random forest                     complete  1.66565      2.75252       
-gplearn.csv               2020-02-20 19:11:19  lol                               complete  1.62892      2.61494       
-combined2.csv             2019-05-17 12:04:24  combined2                         error     None         None          

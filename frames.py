@@ -175,10 +175,8 @@ class ModelTrainingFrame(ttk.Frame):
     def after_benchmark(self, queue):
         scores = queue.get()
 
-        print(scores)
-
-        self.new = tk.Toplevel(self.shared.root)
-        BenchmarkWindow(self.new)
+        self.new = tk.Toplevel(self.shared.root, bg="#F5F6F7")
+        BenchmarkWindow(self.new, scores)
 
 class ParameterTemplateFrame(ttk.Frame):
     def __init__(self, parent, grid, types, shared):
@@ -207,8 +205,8 @@ class ParameterTemplateFrame(ttk.Frame):
         self.widgets = []
         self.specials = []
         self.labels = []
-        l = 0
-        x = True
+        # l = 0
+        # x = True
         defaults = self.parent.paramloader.load_defaults()
         defaults = defaults[self.parent.tkvar.get()]
 
@@ -239,23 +237,23 @@ class ParameterTemplateFrame(ttk.Frame):
                 widget.pack(in_=container, anchor=tk.NW)
                 self.widgets.append(widget)
 
-            else:
-                var = tk.StringVar()
-                var.set(str(defaults[param]))
-                widget = tk.Spinbox(self.scrollable_frame, textvariable=var, values=grid[param])
-                widget.pack(in_=container, anchor=tk.NW)
+            # else:
+            #     var = tk.StringVar()
+            #     # var.set(str(defaults[param]))
+            #     widget = tk.Spinbox(self.scrollable_frame, textvariable=var, values=grid[param])
+            #     widget.pack(in_=container, anchor=tk.NW)
 
-                if x == True:
-                    x = False
-                else:
-                    for _ in range(5):
-                        widget.invoke("buttonup")
-                    x = True
-                self.widgets.append(widget)
-                widget.config(command=partial(self.special_action, l))
+            #     if x == True:
+            #         x = False
+            #     else:
+            #         for _ in range(5):
+            #             widget.invoke("buttonup")
+            #         x = True
+            #     self.widgets.append(widget)
+            #     widget.config(command=partial(self.special_action, l))
 
-                l +=1
-                self.specials.append(self.widgets.index(widget))
+            #     l +=1
+            #     self.specials.append(self.widgets.index(widget))
 
         save_settings = ttk.Button(self.scrollable_frame, text="Save settings as default", command=self.save_params)
         save_settings.pack(anchor=tk.NW, padx=10, pady=10)

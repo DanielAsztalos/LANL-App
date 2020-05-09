@@ -88,17 +88,83 @@
     },
 
     {
-        "model_type": "SymbolicRegressor",
+        "model_type": "CatBoost",
         "params":[
             {
-                "name": "p_crossover",
-                "type": 2,
-                "vals": [0.5, 1.0, 0.1]
+                "name": "learning_rate",
+                "type": 1,
+                "vals": [0.001, 0.1, 0.01]
             },
             {
-                "name": "p_point_mutation",
-                "type":2,
-                "vals": [0.0, 0.5, 0.1]
+                "name": "n_estimators",
+                "type":1,
+                "vals": [300, 1000, 100]
+            },
+            {
+                "name": "max_depth",
+                "type":1,
+                "vals":[3, 9, 1]
+            },
+            {
+                "name": "subsample",
+                "type":1,
+                "vals":[0.7, 0.9, 0.1]
+            },
+            
+            {
+                "name":"l2_leaf_reg",
+                "type":1,
+                "vals":[1, 100, 10]
+            },
+            {
+                "name": "random_strength",
+                "type":1,
+                "vals":[1, 20, 4]
+            }
+        ]
+    },
+    {
+        "model_type":"LGBM",
+        "params":[
+            {
+                "name":"max_depth",
+                "type":1,
+                "vals":[3, 9, 1]
+            },
+            {
+                "name":"min_data_in_leaf",
+                "type":1,
+                "vals":[15, 35, 5]
+            },
+            {
+                "name":"feature_fraction",
+                "type":1,
+                "vals":[0.7, 0.9, 0.1]
+            },
+            {
+                "name":"bagging_fraction",
+                "type":1,
+                "vals":[0.7, 0.9, 0.1]
+            },
+            {
+                "name": "lambda",
+                "type":1,
+                "vals":[0.0, 1.0, 0.2]
+            },
+            {
+                "name":"boosting",
+                "type":0,
+                "vals":["gbdt", "rf", "dart", "goss"]
+            },
+            {
+                "name":"num_boost_round",
+                "type":1,
+                "vals":[200, 1000, 200]
+            },
+            {
+                "name":"learning_rate",
+                "type":1,
+                "vals":[0.001, 0.1, 0.05]
             }
         ]
     }

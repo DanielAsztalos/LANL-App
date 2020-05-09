@@ -3,6 +3,11 @@ import tkinter.ttk as ttk
 from multiprocessing import Queue
 from sharedobject import SharedObject
 from ttkthemes import ThemedStyle
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+import math
 
 class MainWindow:
     def __init__(self, frames):
@@ -46,9 +51,71 @@ class MainWindow:
         self.window.mainloop()
 
 class BenchmarkWindow:
-    def __init__(self, root):
+    def __init__(self, root, scores):
         self.root = root
-        self.root.geometry("300x300")
+        self.root.geometry("800x600")
+        self.scores = scores
 
-        style = ThemedStyle(self.root)
-        style.set_theme('arc')
+        keys = list(self.scores.keys())
+        w = .75
+        num_bars = len(keys)
+        bar_w = w / num_bars
+        x_axis = list(range(len(self.scores[keys[0]]["train"])))
+
+        self.selected_figure = 1
+
+        # figure with train scores
+        self.f1 = Figure(figsize=(5, 5), dpi=100)
+        a = self.f1.add_subplot(111)
+        for i, key in enumerate(keys):
+            a.bar([x + i * bar_w for x in x_axis], self.scores[key]["train"], bar_w)
+        
+        a.legend(keys)
+        a.set_title("Validation scores during training")
+        a.set_yscale('log')
+        a.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+
+        # figure with test scores
+        self.f2 = Figure(figsize=(5,5), dpi=100)
+        a = self.f2.add_subplot(111)
+        for i, key in enumerate(keys):
+            a.bar([x + i * bar_w for x in x_axis], self.scores[key]["validation"], bar_w)
+        
+        a.legend(keys)
+        a.set_title("Test scores")
+        a.set_yscale('log')
+        a.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+
+        container = ttk.Frame(self.root)
+        container.pack(side=tk.TOP, fill=tk.X, expand=True)
+
+        button1 = ttk.Button(self.root, text="<", command=self.switch_figures)
+        button1.pack(in_=container, side=tk.LEFT)
+
+        button2 = ttk.Button(self.root, text=">", command=self.switch_figures)
+        button2.pack(in_=container, side=tk.LEFT)
+
+        button3 = ttk.Button(self.root, text="Export plots")
+        button3.pack(in_=container, side=tk.LEFT)
+
+        self.canvas = FigureCanvasTkAgg(self.f1, self.root)
+        self.canvas.show()
+        self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+    def switch_figures(self):
+        try:
+            self.canvas.get_tk_widget().destroy()
+        except:
+            pass
+
+        if self.selected_figure == 1:
+            self.selected_figure = 2
+            self.canvas = FigureCanvasTkAgg(self.f2, self.root)
+            self.canvas.show()
+            self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        else:
+            self.selected_figure = 1
+            self.canvas = FigureCanvasTkAgg(self.f1, self.root)
+            self.canvas.show()
+            self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+

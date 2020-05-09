@@ -2,7 +2,7 @@ from dataloader import DataLoader
 from paramloader import ParamLoader
 from models import get_model
 
-from sklearn.model_selection import RandomizedSearchCV, train_test_split, KFold
+from sklearn.model_selection import RandomizedSearchCV, train_test_split, KFold, GridSearchCV
 from sklearn.metrics import mean_absolute_error
 
 import threading
@@ -24,7 +24,8 @@ class SearchParams:
 
     def execute(self):
         # instantiate random search with the given parameters and fit
-        src = RandomizedSearchCV(self.model, self.grid, n_iter=50, cv=3, scoring='neg_mean_absolute_error')
+        src = GridSearchCV(self.model, self.grid, scoring='neg_mean_absolute_error', cv=3)
+        # src = RandomizedSearchCV(self.model, self.grid, n_iter=50, cv=3, scoring='neg_mean_absolute_error')
         src.fit(self.data.X, self.data.y)
 
         # when done send a signal to the checker process
@@ -182,6 +183,8 @@ class BenchmarkModels:
         model_names = param_loader.get_model_names()
         defaults = param_loader.load_defaults()
         for model_name in param_loader.get_model_names():
+            if model_name == "SymbolicRegressor":
+                continue
             md = get_model(model_name)
             md.set_params(**defaults[model_name])
             models.append(md)
@@ -207,7 +210,7 @@ class BenchmarkModels:
 
             for mod_idx, model in enumerate(models):
                 model_name = model_names[mod_idx]
-                print(model_name)
+                
                 model.fit(x_tr, y_tr)
 
                 if model_name not in scores.keys():
@@ -215,9 +218,7 @@ class BenchmarkModels:
                     scores[model_name]["train"] = []
                     scores[model_name]["validation"] = []
 
-                print("DoneDunn")
                 scores[model_name]["train"].append(mean_absolute_error(y_te, model.predict(x_te)))
-                print("DoneDuh")
                 scores[model_name]["validation"].append(mean_absolute_error(y_test, model.predict(X_test)))
 
         self.queue.put("Done")
