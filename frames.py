@@ -202,14 +202,12 @@ class ParameterTemplateFrame(ttk.Frame):
 
         canvas.create_window((0, 0), window=self.scrollable_frame, anchor=tk.NW)
         canvas.configure(yscrollcommand=scrollbar.set)
-        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=10)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.widgets = []
-        self.specials = []
         self.labels = []
-        # l = 0
-        # x = True
+
         defaults = self.parent.paramloader.load_defaults()
         defaults = defaults[self.parent.tkvar.get()]
 

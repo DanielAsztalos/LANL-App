@@ -19,15 +19,18 @@ class MainWindow:
         # window
         self.window = tk.Tk()
         self.window.geometry("900x600")
-        self.window.title("LANL Earthquake Prediction Helper App")
+        self.window.title("Earthquake Prediction Helper App")
+        self.window.configure(bg="#ccd9ed")
 
         style = ThemedStyle(self.window)
         style.set_theme('arc')
 
         # status bar on the bottom
         self.var = tk.StringVar(self.window)
-        self.var.set("Train data loaded successfully!")
-        self.status_bar = ttk.Label(self.window, textvariable=self.var, relief=tk.SUNKEN, anchor=tk.W)
+        self.var.set("Application initialized successfully!")
+        s = ttk.Style()
+        s.configure("new.TLabel", foreground="#000000", background="#ccd9ed")
+        self.status_bar = ttk.Label(self.window, textvariable=self.var, style="new.TLabel", anchor=tk.W)
         self.status_bar.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=10)
 
         # main container
@@ -76,7 +79,8 @@ class BenchmarkWindow:
         a.legend(keys)
         a.set_title("Validation scores during training")
         a.set_yscale('log')
-        # a.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+        a.set_xticks(x_axis)
+        a.set_xticklabels(["Fold " + str(i+1) for i in x_axis])
 
         # figure with test scores
         f2 = Figure(figsize=(5,5), dpi=100)
@@ -87,7 +91,8 @@ class BenchmarkWindow:
         a.legend(keys)
         a.set_title("Test scores")
         a.set_yscale('log')
-        # a.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+        a.set_xticks(x_axis)
+        a.set_xticklabels(["Fold " + str(i+1) for i in x_axis])
 
         # figure with averages
         f3 = Figure(figsize=(5, 5), dpi=100)
@@ -98,6 +103,8 @@ class BenchmarkWindow:
         a.set_yscale('log')
         a.legend(keys)
         a.set_title("Average MAEs of the models")
+        a.set_xticks([0, 1])
+        a.set_xticklabels(["Train set", "Validation set"])
 
         self.figures = [f1, f2, f3]
         
@@ -136,5 +143,5 @@ class BenchmarkWindow:
         path = tk.filedialog.askdirectory()
 
         for i, fig in enumerate(self.figures):
-            fig.savefig(os.path.join(path, "figure_" + str(i) + ".png"))
+            fig.savefig(os.path.join(path, "figure_" + str(i) + ".png"), dpi=300, bbox_inches="tight")
 

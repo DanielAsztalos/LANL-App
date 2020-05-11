@@ -6,12 +6,12 @@ from errors import FileNotFoundError
 # ml models
 class ParamLoader:
     def __init__(self):
-        if not os.path.exists("config.json"):
+        if not os.path.exists("data/config.json"):
             raise FileNotFoundError
 
 
         # load json file that contains the param grids
-        with  open("config.json", "r") as inf:
+        with  open("data/config.json", "r") as inf:
             data = json.load(inf)
 
         # parse loaded data
