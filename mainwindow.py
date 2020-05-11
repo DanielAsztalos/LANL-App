@@ -10,6 +10,7 @@ from matplotlib.figure import Figure
 import math
 from statistics import mean
 from time import sleep
+import os
 
 class MainWindow:
     def __init__(self, frames):
@@ -91,7 +92,7 @@ class BenchmarkWindow:
         # figure with averages
         f3 = Figure(figsize=(5, 5), dpi=100)
         a = f3.add_subplot(111)
-        w = 0.10
+        w = 0.20
         for i, key in enumerate(keys):
             a.bar([x + i * w for x in range(2)], [mean(self.scores[key]["train"]), mean(self.scores[key]["validation"])], w)
         a.set_yscale('log')
@@ -109,7 +110,7 @@ class BenchmarkWindow:
         button2 = ttk.Button(self.root, text=">", command=lambda: self.switch_figures(+1))
         button2.pack(in_=container, side=tk.LEFT)
 
-        button3 = ttk.Button(self.root, text="Export plots")
+        button3 = ttk.Button(self.root, text="Export plots", command=self.export_plots)
         button3.pack(in_=container, side=tk.LEFT)
 
         self.canvas = FigureCanvasTkAgg(f1, master=self.root)
@@ -130,4 +131,10 @@ class BenchmarkWindow:
 
         self.canvas = FigureCanvasTkAgg(self.figures[self.selected_figure-1], self.root)
         self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+    def export_plots(self):
+        path = tk.filedialog.askdirectory()
+
+        for i, fig in enumerate(self.figures):
+            fig.savefig(os.path.join(path, "figure_" + str(i) + ".png"))
 

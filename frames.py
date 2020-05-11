@@ -187,7 +187,7 @@ class ParameterTemplateFrame(ttk.Frame):
         self.parent = parent
         self.shared = shared
 
-        canvas = tk.Canvas(self, bg="#F5F6F7")
+        canvas = tk.Canvas(self, bg="#F5F6F7", highlightthickness=0)
 
         scrollbar = ttk.Scrollbar(self, orient='vertical', command=canvas.yview)
 

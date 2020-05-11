@@ -4,17 +4,13 @@ def get_model(name):
         from sklearn.ensemble import RandomForestRegressor
         return RandomForestRegressor()
 
-    elif name == "SymbolicRegressor":
-        from gplearn.genetic import SymbolicRegressor
-        return SymbolicRegressor(500, 100, 30)
-
     elif name == "XGBRegressor":
         from xgboost import XGBRegressor
         return XGBRegressor()
 
     elif name == "CatBoost":
         from catboost import CatBoostRegressor
-        return CatBoostRegressor()
+        return CatBoostRegressor(silent=True)
     
     elif name == "LGBM":
         from lightgbm import LGBMRegressor
