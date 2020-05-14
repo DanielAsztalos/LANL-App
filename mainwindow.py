@@ -11,6 +11,7 @@ import math
 from statistics import mean
 from time import sleep
 import os
+import numpy as np
 
 class MainWindow:
     def __init__(self, frames):
@@ -98,8 +99,11 @@ class BenchmarkWindow:
         f3 = Figure(figsize=(5, 5), dpi=100)
         a = f3.add_subplot(111)
         w = 0.20
+        
         for i, key in enumerate(keys):
-            a.bar([x + i * w for x in range(2)], [mean(self.scores[key]["train"]), mean(self.scores[key]["validation"])], w)
+            train = np.array(self.scores[key]["train"])
+            valid = np.array(self.scores[key]["validation"])
+            a.bar([x + i * w for x in range(2)], [np.mean(train), np.mean(valid)], w)
         a.set_yscale('log')
         a.legend(keys)
         a.set_title("Average MAEs of the models")
