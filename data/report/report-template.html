@@ -8,9 +8,9 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
 <body>
-    <h2>Benchmark Report - Earthquake Prediction Models</h2>
+    <h2><b>Benchmark Report - Earthquake Prediction Models</b></h2>
     <p class="date">Date: {{ date }}</p>
-    <h3><b>Model parameters:</b></h3>
+    <h3><b>Model parameters</b></h3>
     {% for name in model_scores.keys() %}
         <h5><b>{{ name }}:</b></h5>
         <table class="table">
@@ -31,7 +31,13 @@
         </table>
     {% endfor %}
 
-    <img src="corr_mat.png" alt="">
+    <br><br><br>
+
+    <h3><b>Performance report</b></h3>
+
+    {% for fig in figures %}
+        <center><img src="{{ fig }}" alt=""></center>
+    {% endfor %}
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd" crossorigin="anonymous"></script>

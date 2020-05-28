@@ -1,3 +1,4 @@
 __pycache__/
 venv/
+data/report/*.pdf
 *.pyc

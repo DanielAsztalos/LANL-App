@@ -1,3 +1,10 @@
+@page{
+    @bottom-center{
+        content: counter(page);
+        font-family: 'Open Sans', sans-serif;
+    }
+}
+
 body{
     font-family: 'Open Sans', sans-serif;
 }
@@ -25,5 +32,5 @@ h4{
 }
 
 img{
-    width: 100%;
+    width: 75%;
 }

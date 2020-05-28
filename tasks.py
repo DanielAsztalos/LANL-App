@@ -222,3 +222,4 @@ class BenchmarkModels:
 
         self.queue.put("Done")
         self.queue.put(scores)
+        self.queue.put(defaults)

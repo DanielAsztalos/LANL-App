@@ -12,6 +12,7 @@ from statistics import mean
 from time import sleep
 import os
 import numpy as np
+from report import ReportGenerator
 
 class MainWindow:
     def __init__(self, frames):
@@ -58,10 +59,11 @@ class MainWindow:
         self.window.mainloop()
 
 class BenchmarkWindow:
-    def __init__(self, root, scores):
+    def __init__(self, root, scores, params):
         self.root = root
         self.root.geometry("800x600")
         self.scores = scores
+        self.params = params
 
         keys = list(self.scores.keys())
         w = .75
@@ -72,7 +74,7 @@ class BenchmarkWindow:
         self.selected_figure = 1
 
         # figure with train scores
-        f1 = Figure(figsize=(5, 5), dpi=100)
+        f1 = Figure(figsize=(7, 5), dpi=100)
         a = f1.add_subplot(111)
         for i, key in enumerate(keys):
             a.bar([x + i * bar_w for x in x_axis], self.scores[key]["train"], bar_w)
@@ -84,7 +86,7 @@ class BenchmarkWindow:
         a.set_xticklabels(["Fold " + str(i+1) for i in x_axis])
 
         # figure with test scores
-        f2 = Figure(figsize=(5,5), dpi=100)
+        f2 = Figure(figsize=(7,5), dpi=100)
         a = f2.add_subplot(111)
         for i, key in enumerate(keys):
             a.bar([x + i * bar_w for x in x_axis], self.scores[key]["validation"], bar_w)
@@ -96,7 +98,7 @@ class BenchmarkWindow:
         a.set_xticklabels(["Fold " + str(i+1) for i in x_axis])
 
         # figure with averages
-        f3 = Figure(figsize=(5, 5), dpi=100)
+        f3 = Figure(figsize=(7, 5), dpi=100)
         a = f3.add_subplot(111)
         w = 0.20
         
@@ -115,14 +117,21 @@ class BenchmarkWindow:
         container = ttk.Frame(self.root)
         container.pack(side=tk.TOP, fill=tk.X, expand=True)
 
+        # left navigation button
         button1 = ttk.Button(self.root, text="<", command=lambda: self.switch_figures(-1))
         button1.pack(in_=container, side=tk.LEFT)
 
+        # right navigation button
         button2 = ttk.Button(self.root, text=">", command=lambda: self.switch_figures(+1))
         button2.pack(in_=container, side=tk.LEFT)
 
+        # Export plots button
         button3 = ttk.Button(self.root, text="Export plots", command=self.export_plots)
         button3.pack(in_=container, side=tk.LEFT)
+
+        # Generate report button
+        button4 = ttk.Button(self.root, text="Generate report", command=self.generate_report)
+        button4.pack(in_=container, side=tk.LEFT)
 
         self.canvas = FigureCanvasTkAgg(f1, master=self.root)
         self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
@@ -148,4 +157,11 @@ class BenchmarkWindow:
 
         for i, fig in enumerate(self.figures):
             fig.savefig(os.path.join(path, "figure_" + str(i) + ".png"), dpi=300, bbox_inches="tight")
+
+    def generate_report(self):
+        for fig in self.figures:
+            FigureCanvasTkAgg(fig)
+
+        generator = ReportGenerator()
+        generator.generate_report(self.scores, self.params, self.figures)
 

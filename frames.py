@@ -175,10 +175,11 @@ class ModelTrainingFrame(ttk.Frame):
 
     def after_benchmark(self, queue):
         scores = queue.get()
+        params = queue.get()
 
         self.new = tk.Toplevel(self.shared.root, bg="#F5F6F7")
         self.new.transient(self.shared.root)
-        BenchmarkWindow(self.new, scores)
+        BenchmarkWindow(self.new, scores, params)
 
 # embedded into the ParamSelection frame
 class ParameterTemplateFrame(ttk.Frame):
