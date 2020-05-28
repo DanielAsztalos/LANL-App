@@ -35,6 +35,60 @@
 
     <h3><b>Performance report</b></h3>
 
+    <h4><b>Tabular format</b></h4>
+
+    <h5><b>Train dataset</b></h5>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Model</th>
+                {% for i in range(length) %}
+                    <th>Fold {{ i + 1 }}</th>
+                {% endfor %}
+                <th>Average error</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for model in model_scores.keys() %}
+                <tr>
+                    <td>{{ model }}</td>
+                    {% for data in model_scores[model]["train"] %}
+                        <td>{{ data }}</td>
+                    {% endfor %}
+                    <td>{{ model_scores[model]["train_avg"] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h5><b>Test dataset</b></h5>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Model</th>
+                {% for i in range(length) %}
+                    <th>Fold {{ i + 1 }}</th>
+                {% endfor %}
+                <th>Average error</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for model in model_scores.keys() %}
+                <tr>
+                    <td>{{ model }}</td>
+                    {% for data in model_scores[model]["validation"] %}
+                        <td>{{ data }}</td>
+                    {% endfor %}
+                    <td>{{ model_scores[model]["validation_avg"] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4><b>Graphical format</b></h4>
+
     {% for fig in figures %}
         <center><img src="{{ fig }}" alt=""></center>
     {% endfor %}

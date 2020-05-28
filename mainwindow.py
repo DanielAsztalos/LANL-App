@@ -162,6 +162,8 @@ class BenchmarkWindow:
         for fig in self.figures:
             FigureCanvasTkAgg(fig)
 
-        generator = ReportGenerator()
+        path = tk.filedialog.askdirectory(title="Select the directory to save the report")
+
+        generator = ReportGenerator(out_path=path)
         generator.generate_report(self.scores, self.params, self.figures)
 
