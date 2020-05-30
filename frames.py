@@ -8,6 +8,7 @@ from models import get_model
 from mainwindow import BenchmarkWindow
 import threading
 import numpy as np
+import Pmw
 
 # displayed on the left side of the main window
 class ParamSelectionFrame(ttk.Frame):
@@ -39,8 +40,9 @@ class ParamSelectionFrame(ttk.Frame):
         self.search_button.pack(in_=self.top_bar, side=tk.TOP, padx=10, pady=5)
 
         grid, types = self.paramloader.get_param_grid(model_names[0])
+        hints = self.paramloader.get_hints_of_model(model_names[0])
 
-        self.content = ParameterTemplateFrame(self, grid, types, self.shared)
+        self.content = ParameterTemplateFrame(self, grid, types, self.shared, hints)
         self.content.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
    
 
@@ -49,7 +51,8 @@ class ParamSelectionFrame(ttk.Frame):
 
     def model_selection_change(self, name):
         grid, types = self.paramloader.get_param_grid(name)
-        new_content = ParameterTemplateFrame(self, grid, types, self.shared)
+        hints = self.paramloader.get_hints_of_model(name)
+        new_content = ParameterTemplateFrame(self, grid, types, self.shared, hints)
         if self.content is not None:
             self.content.destroy()
         self.content = new_content
@@ -89,21 +92,26 @@ class ModelTrainingFrame(ttk.Frame):
         self.name = "Training model"
         self.shared = shared
 
+        tooltip = Pmw.Balloon(parent)
+
         label1 = ttk.Label(self, text="Train and test parameters")
         label1.pack(side=tk.TOP, anchor=tk.NW, padx=10, pady=10)
 
         test_size = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
         cv_num = [3, 5, 7, 9]
         labels = ["Test size", "Number of folds"]
+        hints = ["The percentage of the train data that should be reserved for testing. Type: float between 0.0 and 1.0.", 
+                "The number of folds for KFold validation. Type: integer (odd number)."]
         values = [test_size, cv_num]
         self.widgets = []
 
-        for val, label in zip(values, labels):
+        for (i, val), label in zip(enumerate(values), labels):
             container = ttk.Frame(self)
             container.pack(anchor=tk.NW, padx=10, pady=10)
 
             label = ttk.Label(self, text=label)
             label.pack(in_=container, anchor=tk.NW)
+            tooltip.bind(label, hints[i])
 
             spinner = tk.Spinbox(self, values=val)
             spinner.pack(in_=container, anchor=tk.NW)
@@ -118,12 +126,14 @@ class ModelTrainingFrame(ttk.Frame):
 
         start_train = ttk.Button(self, text="Start training", command=self.train_task)
         start_train.pack(in_=button_container, side=tk.LEFT, anchor=tk.NW, padx=0, pady=0)
+        tooltip.bind(start_train, "Train only the model selected on the model selection side.")
 
         benchmark = ttk.Button(self, text="Benchmark all models", command=self.benchmark_task)
         benchmark.pack(in_=button_container, side=tk.LEFT, anchor=tk.NW)
 
         label = ttk.Label(self, text="Results")
         label.pack(side=tk.TOP, anchor=tk.NW, padx=10, pady=20)
+        tooltip.bind(label, "The results of the individual training processes are displayed in the box below.")
 
         self.table = ttk.Treeview(self, columns=('mean_abs_error'))
         self.table.heading('mean_abs_error', text="Mean abs error")
@@ -183,7 +193,7 @@ class ModelTrainingFrame(ttk.Frame):
 
 # embedded into the ParamSelection frame
 class ParameterTemplateFrame(ttk.Frame):
-    def __init__(self, parent, grid, types, shared):
+    def __init__(self, parent, grid, types, shared, hints):
         ttk.Frame.__init__(self, parent)
         self.parent = parent
         self.shared = shared
@@ -215,6 +225,7 @@ class ParameterTemplateFrame(ttk.Frame):
         self.shared.param_grid_lock.acquire()
         self.shared.param_grid = defaults
         self.shared.param_grid_lock.release()
+        tooltip = Pmw.Balloon(self.parent)
 
         for i, param in enumerate(grid.keys()):
             self.labels.append(param)
@@ -224,6 +235,7 @@ class ParameterTemplateFrame(ttk.Frame):
 
             label = ttk.Label(self.scrollable_frame, text=param)
             label.pack(in_=container, anchor=tk.NW)
+            tooltip.bind(label, hints[i])
 
             if types[i] == 0:
                 tkVar = tk.StringVar()

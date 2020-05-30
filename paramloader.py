@@ -43,6 +43,15 @@ class ParamLoader:
                     types.append(param["type"])
         return grid, types
 
+    def get_hints_of_model(self, model_name):
+        hints = []
+        for model_ in self.data:
+            if model_["model_type"] == model_name:
+                for param in model_["params"]:
+                    hints.append(param["hint"])
+                break
+        return hints
+
     # modify default parameter values for a given model
     def modify_defaults(self, defaults):
         with open("data/defaults.json", "r") as inf:

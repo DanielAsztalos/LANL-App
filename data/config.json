@@ -5,37 +5,43 @@
             {
                 "name": "bootstrap",
                 "type": 0,
-                "vals": [0, 1]
+                "vals": [0, 1],
+                "hint": "Whether bootstrap samples are used when building trees. If False, the whole dataset is used to build each tree."
             },
 
             {
                 "name": "max_depth",
                 "type": 1,
-                "vals": [4, 9, 1]
+                "vals": [4, 9, 1],
+                "hint": "The maximum depth of the tree. Type: integer."
             },
 
             {
                 "name": "max_features",
                 "type": 0,
-                "vals": ["auto", "sqrt"]
+                "vals": ["auto", "sqrt"],
+                "hint": "The number of features to consider when looking for the best split."
             },
 
             {
                 "name": "min_samples_leaf",
                 "type": 1,
-                "vals": [1, 4, 1]
+                "vals": [1, 4, 1],
+                "hint": "The minimum number of samples required to be at a leaf node. A split point at any depth will only be considered if it leaves at least min_samples_leaf training samples in each of the left and right branches. Type: integer."
             },
 
             {
                 "name": "min_samples_split",
                 "type":1,
-                "vals":[2, 10, 2]
+                "vals":[2, 10, 2],
+                "hint": "The minimum number of samples required to split an internal node. Type: integer."
             },
 
             {
                 "name": "n_estimators",
                 "type": 1,
-                "vals":[200, 2000, 200]
+                "vals":[200, 2000, 200],
+                "hint": "The number of trees in the forest. Type: integer."
             }
 
         ]
@@ -47,42 +53,50 @@
             {
                 "name": "max_depth",
                 "type":1,
-                "vals":[3, 9, 1]
+                "vals":[3, 9, 1],
+                "hint": "Maximum tree depth for base learners. Type: integer."
             },
             {
                 "name": "min_child_weight",
                 "type": 1,
-                "vals": [1, 5, 2]
+                "vals": [1, 5, 2],
+                "hint": "Minimum sum of instance weight(hessian) needed in a child. Type: integer."
             },
             {
                 "name": "gamma",
                 "type": 1,
-                "vals": [0, 0.4, 0.1]
+                "vals": [0, 0.4, 0.1],
+                "hint": "Minimum loss reduction required to make a further partition on a leaf node of the tree. Type: float between 0.0 and 1.0."
             },
             {
                 "name": "subsample",
                 "type": 1,
-                "vals": [0.7, 0.9, 0.1]
+                "vals": [0.7, 0.9, 0.1],
+                "hint": "Subsample ratio of the training instance. Type: float between 0.0 and 1.0."
             },
             {
                 "name": "colsample_bytree",
                 "type": 1,
-                "vals": [0.7, 0.9, 0.1]
+                "vals": [0.7, 0.9, 0.1],
+                "hint": "Subsample ratio of columns when constructing each tree. Type: float between 0.0 and 1.0."
             },
             {
                 "name": "reg_alpha",
                 "type":1,
-                "vals":[1, 100, 10]
+                "vals":[1, 100, 10],
+                "hint": "L1 regularization term on weights. Type: float."
             },
             {
                 "name": "eta",
                 "type": 1,
-                "vals": [0.001, 0.1, 0.01]
+                "vals": [0.001, 0.1, 0.01],
+                "hint": "Boosting learning rate. Type: float."
             },
             {
                 "name": "n_estimators",
                 "type": 1,
-                "vals": [300, 1000, 100]
+                "vals": [300, 1000, 100],
+                "hint": "Number of gradient boosted trees. Equivalent to number of boosting rounds. Type: integer."
             }
         ]
     },
@@ -93,33 +107,39 @@
             {
                 "name": "learning_rate",
                 "type": 1,
-                "vals": [0.001, 0.1, 0.01]
+                "vals": [0.001, 0.1, 0.01],
+                "hint": "The learning rate. Used for reducing the gradient step. Type: float."
             },
             {
                 "name": "n_estimators",
                 "type":1,
-                "vals": [300, 1000, 100]
+                "vals": [300, 1000, 100],
+                "hint": "The maximum number of trees that can be built when solving machine learning problems. Type: integer."
             },
             {
                 "name": "max_depth",
                 "type":1,
-                "vals":[3, 9, 1]
+                "vals":[3, 9, 1],
+                "hint": "Depth of the tree. Type: integer."
             },
             {
                 "name": "subsample",
                 "type":1,
-                "vals":[0.7, 0.9, 0.1]
+                "vals":[0.7, 0.9, 0.1],
+                "hint": "Sample rate for bagging. Type: float between 0.0 and 1.0."
             },
             
             {
                 "name":"l2_leaf_reg",
                 "type":1,
-                "vals":[1, 100, 10]
+                "vals":[1, 100, 10],
+                "hint": "Coefficient at the L2 regularization term of the cost function. Type: float."
             },
             {
                 "name": "random_strength",
                 "type":1,
-                "vals":[1, 20, 4]
+                "vals":[1, 20, 4],
+                "hint": "The amount of randomness to use for scoring splits when the tree structure is selected. Type: integer."
             }
         ]
     },
@@ -129,42 +149,50 @@
             {
                 "name":"max_depth",
                 "type":1,
-                "vals":[3, 9, 1]
+                "vals":[3, 9, 1],
+                "hint": "Maximum tree depth for base learners, <=0 means no limit. Type: integer."
             },
             {
                 "name":"min_data_in_leaf",
                 "type":1,
-                "vals":[15, 35, 5]
+                "vals":[15, 35, 5],
+                "hint": ""
             },
             {
                 "name":"feature_fraction",
                 "type":1,
-                "vals":[0.7, 0.9, 0.1]
+                "vals":[0.7, 0.9, 0.1],
+                "hint": ""
             },
             {
                 "name":"bagging_fraction",
                 "type":1,
-                "vals":[0.7, 0.9, 0.1]
+                "vals":[0.7, 0.9, 0.1],
+                "hint": ""
             },
             {
                 "name": "lambda",
                 "type":1,
-                "vals":[0.0, 1.0, 0.2]
+                "vals":[0.0, 1.0, 0.2],
+                "hint": "L2 regularization term on weights. Type: float."
             },
             {
                 "name":"boosting",
                 "type":0,
-                "vals":["gbdt", "rf", "dart", "goss"]
+                "vals":["gbdt", "rf", "dart", "goss"],
+                "hint": "‘gbdt’, traditional Gradient Boosting Decision Tree. ‘dart’, Dropouts meet Multiple Additive Regression Trees. ‘goss’, Gradient-based One-Side Sampling. ‘rf’, Random Forest."
             },
             {
                 "name":"num_boost_round",
                 "type":1,
-                "vals":[200, 1000, 200]
+                "vals":[200, 1000, 200],
+                "hint": "Number of boosted trees to fit. Type: integer."
             },
             {
                 "name":"learning_rate",
                 "type":1,
-                "vals":[0.001, 0.1, 0.05]
+                "vals":[0.001, 0.1, 0.05],
+                "hint": "Boosting learning rate. Type: float."
             }
         ]
     }
