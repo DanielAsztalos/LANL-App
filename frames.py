@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+from tkinter import messagebox
 from paramloader import ParamLoader
 from functools import partial
 from tasks import SearchParams, CheckSearch, TrainAndTest, BenchmarkModels
@@ -9,6 +10,7 @@ from mainwindow import BenchmarkWindow
 import threading
 import numpy as np
 import Pmw
+import re
 
 # displayed on the left side of the main window
 class ParamSelectionFrame(ttk.Frame):
@@ -254,13 +256,38 @@ class ParameterTemplateFrame(ttk.Frame):
         save_settings = ttk.Button(self.scrollable_frame, text="Save settings as default", command=self.save_params)
         save_settings.pack(anchor=tk.NW, padx=10, pady=10)
 
+    def validate_inputs(self):
+        model = self.parent.tkvar.get()
+        _, types = self.parent.paramloader.get_param_grid(model)
+        vals = []
+
+        for i, widget in enumerate(self.widgets):
+            val = self.widgets[i].get()
+            if types[i] == 1:
+                if re.search("^[0-9]*\.?[0-9]+$", val) != None:
+                    vals.append(val)
+                else:
+                    return i, False
+            else:
+                vals.append(val)
+        return vals, True
             
     def save_params(self):
         name = self.parent.tkvar.get()
         params = dict()
         params[name] = dict()
 
+        vals, result = self.validate_inputs()
+
+        if result == False:
+            messagebox.showerror("Invalid input", "Error with the value of " + self.labels[vals] + ". Please check if you entered a correct value!")
+            return
+
         for i in range(len(self.labels)):
-            params[name][self.labels[i]] = self.widgets[i].get()
+            params[name][self.labels[i]] = vals[i]
         
         self.parent.paramloader.modify_defaults(params)
+
+        self.parent.shared.state_lock.acquire()
+        self.parent.shared.state.set("Parameters successfully saved!")
+        self.parent.shared.state_lock.release()

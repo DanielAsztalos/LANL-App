@@ -13,6 +13,7 @@ from time import sleep
 import os
 import numpy as np
 from report import ReportGenerator
+from tkinterhtml import HtmlFrame
 
 class MainWindow:
     def __init__(self, frames):
@@ -26,6 +27,17 @@ class MainWindow:
 
         style = ThemedStyle(self.window)
         style.set_theme('arc')
+
+        menu = tk.Menu(self.window)
+        self.window.config(menu=menu)
+
+        file_menu = tk.Menu(menu, tearoff=0)
+        file_menu.add_command(label="Exit")
+        menu.add_cascade(label="File", menu=file_menu)
+
+        help_menu = tk.Menu(menu, tearoff=0)
+        help_menu.add_command(label="About", command=self.open_help)
+        menu.add_cascade(label="Help", menu=help_menu)
 
         # status bar on the bottom
         self.var = tk.StringVar(self.window)
@@ -57,6 +69,49 @@ class MainWindow:
     # show window
     def show(self):
         self.window.mainloop()
+
+    def exit(self):
+        self.window.destroy()
+
+    def open_help(self):
+        tl = tk.Toplevel(self.window, bg="#F5F6F7")
+        tl.transient(self.window)
+        HelpWindow(tl)
+
+class HelpWindow:
+    def __init__(self, root):
+        self.root = root
+        self.root.geometry("800x600")
+
+        canvas = tk.Canvas(self.root, bg="#F5F6F7", highlightthickness=0)
+
+        scrollbar = ttk.Scrollbar(self.root, orient='vertical', command=canvas.yview)
+
+        self.scrollable_frame = ttk.Frame(canvas)
+
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        canvas.create_window((0, 0), window=self.scrollable_frame, anchor=tk.NW)
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=10)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        title = ttk.Label(self.scrollable_frame, text="Earthquake Prediction App", font=("Sans Serif", 18))
+        title.pack(anchor=tk.NW, padx=20, pady=10)
+
+        lines = []
+        with open("data/help.txt", "rt") as inf:
+            lines = inf.readlines()
+
+        for line in lines:
+            label = ttk.Label(self.scrollable_frame, text=line, wraplength=700, font=("Sans Serif", 12))
+            label.pack(anchor=tk.NW, padx=20, pady=10)
+
 
 class BenchmarkWindow:
     def __init__(self, root, scores, params):
