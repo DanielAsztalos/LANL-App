@@ -1,9 +1,11 @@
 from jinja2 import Environment, FileSystemLoader
 from weasyprint import HTML
 from datetime import datetime
+from tkinter import messagebox
 import os
 import shutil
 import numpy as np
+import sys
 
 class ReportGenerator:
     def __init__(self, env_folder="./data/report", template_file="report-template.html", 
@@ -43,10 +45,19 @@ class ReportGenerator:
             "length": len(model_scores[list(model_scores.keys())[0]]["train"])
         }
 
-        html_out = self.template.render(template_vars)
-        HTML(string=html_out, base_url="./data/report").write_pdf(os.path.join(self.out_path, "report_" + \
+        try:
+            html_out = self.template.render(template_vars)
+            HTML(string=html_out, base_url="./data/report").write_pdf(os.path.join(self.out_path, "report_" + \
                                                                     datetime.now().strftime("%Y%m%d_%H%M%S") + ".pdf"), \
                                                                     stylesheets=self.stylesheets, presentational_hints=True)
+        except:
+            messagebox.showerror("An error occured in generating the report", sys.exc_info()[0])
+            return
 
-        shutil.rmtree(tmp_folder, ignore_errors=True)
+        try:
+            shutil.rmtree(tmp_folder, ignore_errors=True)
+        except:
+            pass
+        
+        messagebox.showinfo("Report saved", "Successfully saved report to the specified location!")
 

@@ -216,6 +216,9 @@ class BenchmarkWindow:
     def export_plots(self):
         path = tk.filedialog.askdirectory()
 
+        if path is None:
+            return
+
         for i, fig in enumerate(self.figures):
             fig.savefig(os.path.join(path, "figure_" + str(i) + ".png"), dpi=300, bbox_inches="tight")
 
@@ -224,6 +227,9 @@ class BenchmarkWindow:
             FigureCanvasTkAgg(fig)
 
         path = tk.filedialog.askdirectory(title="Select the directory to save the report")
+        
+        if path == '':
+            return
 
         generator = ReportGenerator(out_path=path)
         generator.generate_report(self.scores, self.params, self.figures)

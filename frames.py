@@ -4,9 +4,14 @@ from tkinter import messagebox
 from paramloader import ParamLoader
 from functools import partial
 from tasks import SearchParams, CheckSearch, TrainAndTest, BenchmarkModels
+from report import ReportGenerator
 from multiprocessing import Queue
 from models import get_model
 from mainwindow import BenchmarkWindow
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 import threading
 import numpy as np
 import Pmw
@@ -123,6 +128,10 @@ class ModelTrainingFrame(ttk.Frame):
         check_box = ttk.Checkbutton(self, text="Upload to kaggle", variable=self.upload_selected)
         check_box.pack(side=tk.TOP, anchor=tk.NW, padx=10)
 
+        self.report_selected = tk.IntVar()
+        cb_gen_report = ttk.Checkbutton(self, text="Generate training report", variable=self.report_selected)
+        cb_gen_report.pack(side=tk.TOP, anchor=tk.NW, padx=10)
+
         button_container = ttk.Frame(self)
         button_container.pack(side=tk.TOP, anchor=tk.NW, padx=10, pady=10)
 
@@ -184,6 +193,48 @@ class ModelTrainingFrame(ttk.Frame):
         self.table.insert('', 'end', 'test', text="Test scores", values=(np.mean(results["test_scores"])))
         for i, score in enumerate(results["test_scores"]):
             self.table.insert('test', 'end', text="Fold {}".format(i), values=(score))
+
+        if self.report_selected.get():
+            path = tk.filedialog.askdirectory(title="Select directory for the report")
+
+            if path == '':
+                return
+
+            res_report = queue.get()
+            params = queue.get()
+
+            self.generate_plots(results)
+
+            generator = ReportGenerator(out_path=path)
+            generator.generate_report(res_report, params, self.figures)
+
+    def generate_plots(self, scores):
+        w = .75
+        x_axis = list(range(len(scores["train_scores"])))
+
+        f1 = Figure(figsize=(7, 5), dpi=100)
+        a = f1.add_subplot(111)
+        a.bar([x for x in x_axis], scores["train_scores"], w - 0.1)
+
+        a.set_title("Validation scores during training")
+        a.set_yscale('log')
+        a.set_xticks(x_axis)
+        a.set_xticklabels(["Fold " + str(i+1) for i in x_axis])
+
+        # figure with test scores
+        f2 = Figure(figsize=(7,5), dpi=100)
+        a = f2.add_subplot(111)
+        a.bar([x for x in x_axis], scores["test_scores"], w - .1)
+
+        a.set_title("Test scores")
+        a.set_yscale('log')
+        a.set_xticks(x_axis)
+        a.set_xticklabels(["Fold " + str(i+1) for i in x_axis])
+
+        self.figures = [f1, f2]
+
+        for fig in self.figures:
+            FigureCanvasTkAgg(fig)
 
     def after_benchmark(self, queue):
         scores = queue.get()

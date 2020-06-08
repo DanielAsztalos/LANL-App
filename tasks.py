@@ -102,8 +102,11 @@ class TrainAndTest:
         X_train, X_test, y_train, y_test = train_test_split(data.X, data.y, test_size=self.test_size)
 
         # get ml model
-        model = get_model(self.shared.selected_model)
-        model.set_params(**self.shared.param_grid)
+        model_name = self.shared.selected_model
+        param_grid = self.shared.param_grid
+
+        model = get_model(model_name)
+        model.set_params(**param_grid)
 
         # initialize folds
         folds = KFold(n_splits=self.n_folds)
@@ -162,9 +165,19 @@ class TrainAndTest:
         results['train_scores'] = train_scores
         results['test_scores'] = test_scores
 
+        res_report = dict()
+        res_report[model_name] = dict()
+        res_report[model_name]["train"] = train_scores
+        res_report[model_name]["validation"] = test_scores
+
+        params = dict()
+        params[model_name] = param_grid
+
         # put that dictionary into the queue along with the "Done" signal
         self.queue.put("Done")
         self.queue.put(results)
+        self.queue.put(res_report)
+        self.queue.put(params)
 
 
 class BenchmarkModels:
