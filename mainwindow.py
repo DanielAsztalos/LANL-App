@@ -14,6 +14,7 @@ import os
 import numpy as np
 from report import ReportGenerator
 from tkinterhtml import HtmlFrame
+import webbrowser
 
 class MainWindow:
     def __init__(self, frames):
@@ -37,6 +38,7 @@ class MainWindow:
 
         help_menu = tk.Menu(menu, tearoff=0)
         help_menu.add_command(label="About", command=self.open_help)
+        help_menu.add_command(label="Explore Dataset", command=self.eda)
         menu.add_cascade(label="Help", menu=help_menu)
 
         # status bar on the bottom
@@ -77,6 +79,10 @@ class MainWindow:
         tl = tk.Toplevel(self.window, bg="#F5F6F7")
         tl.transient(self.window)
         HelpWindow(tl)
+
+    def eda(self):
+        path = os.path.abspath("./data/lanl_report.html")
+        webbrowser.open(path)
 
 class HelpWindow:
     def __init__(self, root):
