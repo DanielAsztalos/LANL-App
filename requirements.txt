@@ -21,6 +21,7 @@ pandas==1.0.3
 pdfkit==0.6.1
 Pillow==7.1.2
 plotly==4.7.1
+Pmw==2.0.1
 pycparser==2.20
 pyparsing==2.4.7
 Pyphen==0.9.5
@@ -32,6 +33,7 @@ scipy==1.4.1
 six==1.14.0
 sklearn==0.0
 tinycss2==1.0.2
+tkinterhtml==0.7
 ttkthemes==3.0.0
 urllib3==1.25.9
 WeasyPrint==51
