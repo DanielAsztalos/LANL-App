@@ -35,7 +35,7 @@ sklearn==0.0
 tinycss2==1.0.2
 tkinterhtml==0.7
 ttkthemes==3.0.0
-urllib3==1.25.9
+urllib3==1.26.5
 WeasyPrint==51
 webencodings==0.5.1
 xgboost==1.0.2
